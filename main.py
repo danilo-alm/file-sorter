@@ -1,5 +1,7 @@
 import filetype
 import os
+import argparse
+
 
 def main():
     # Path with files to be sorted
@@ -55,7 +57,8 @@ def move_file(filepath, kind):
             return
     
     os.rename(filepath, new_path)
-    print(f'File {filename} moved to {new_path}')
+    if parser.verbose:
+        print(f'File {filename} moved to {new_path}')
 
 
 folders = {
@@ -83,6 +86,10 @@ documents = ['msword', 'vnd.openxmlformats-officedocument.wordprocessingml.docum
              'vnd.oasis.opendocument.presentation']
 
 fonts = ['font-woff', 'font-woff', 'font-sfnt', 'font-sfnt']
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-v', '--verbose', help='Verbose', action='store_true')
+args = parser.parse_args()
 
 if __name__ == '__main__':
     main()
