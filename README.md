@@ -1,6 +1,6 @@
 # File Sorter
 
-This is a Python script that sorts files in a specified directory by their file type. It uses the `filetype` library to guess the file type and then moves the file to the appropriate directory based on its type.
+This is a Python script that sorts files in a specified directory by their file type. It uses the `filetype` library to guess the file type and then moves the file to the appropriate directory based on its type. Since I created this targeting my Android Device's "Downloads" folder, the directories for organizing the files will be created in the same path as the files are located.
 
 ## Usage
 
