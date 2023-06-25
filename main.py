@@ -18,7 +18,7 @@ def main():
 
     for file in files:
         kind = filetype.guess(file)
-        move_file(file, kind)
+        decide_and_move_file(file, kind)
 
 
 def get_files(path):
@@ -26,46 +26,59 @@ def get_files(path):
     return [i for i in files if os.path.isfile(i)]
 
 
-def move_file(filepath, kind):
-    filename = os.path.split(filepath)[-1]
+def get_destination_path(filename, kind):
     if kind is None:
-        # Could not guess file type
-        new_path = os.path.join(folders['Other'], filename)
-        os.rename(filepath, new_path)
-        
-        if args.verbose:
-            print(f'File {filename} moved to {new_path}')
-        
-        return
+        return os.path.join(folders['Other'], filename)
     
     ftype = kind.mime.split('/')
     
     # Matching the top-level media type
     match ftype[0]:
         case 'image':
-            new_path = os.path.join(folders['Pictures'], filename)
+            destination = os.path.join(folders['Pictures'], filename)
 
         case 'video':
-            new_path = os.path.join(folders['Videos'], filename)
+            destination = os.path.join(folders['Videos'], filename)
         
         case 'audio':
-            new_path = os.path.join(folders['Audio'], filename)
+            destination = os.path.join(folders['Audio'], filename)
         
         case 'application':
             # Checking the subtype
             if ftype[1] in archives_subtypes:
-                new_path = os.path.join(folders['Archives'], filename)
+                destination = os.path.join(folders['Archives'], filename)
             elif ftype[1] in documents_subtypes:
-                new_path = os.path.join(folders['Documents'], filename)
+                destination = os.path.join(folders['Documents'], filename)
             elif ftype[1] in fonts_subtypes:
-                new_path = os.path.join(folders['Fonts'], filename)
+                destination = os.path.join(folders['Fonts'], filename)
         
         case _:
             return
+        
+    return destination
+
+
+def rename_if_exists(path):
+    count = 1
+    filename, extension = os.path.splitext(path)
+    new_path = path
     
-    os.rename(filepath, new_path)
+    while os.path.exists(new_path):
+        new_filename = f"{filename}({count})"
+        new_path = f"{new_filename}{extension}"
+        count += 1
+
+    return new_path
+
+
+def decide_and_move_file(file_path, kind):
+    filename = os.path.split(file_path)[-1]
+    destination = get_destination_path(filename, kind)
+    destination = rename_if_exists(destination)
+    os.rename(file_path, destination)
+
     if args.verbose:
-        print(f'File {filename} moved to {new_path}')
+        print(f'File {filename} moved to {destination}')
 
 
 # Folder names and their full paths (populated in main)
