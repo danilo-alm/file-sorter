@@ -33,4 +33,12 @@ The script organizes files into several default directories based on their types
 - Fonts
 - Other
 
-These directories are automatically created by the script if they do not already exist. You can modify the directory names and their corresponding paths directly in the script if desired.
+These directories are automatically created by the script, in the same location of the files, if they do not already exist. You can modify the directory names and their corresponding paths directly in the script if desired.
+
+## License
+
+This project is licensed under the [GNU General Public License](LICENSE). Feel free to modify and use it according to your needs.
+
+## Disclaimer
+
+This script is provided as-is without any warranty. Use it at your own risk. Make sure to test it on sample files before running it on your actual data.
