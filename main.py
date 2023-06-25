@@ -1,6 +1,7 @@
 import filetype
 import os
 import argparse
+import re
 
 
 def main():
@@ -59,8 +60,17 @@ def get_destination_path(filename, kind):
 
 
 def rename_if_exists(path):
-    count = 1
     filename, extension = os.path.splitext(path)
+    # Search for a number between parenthesis at the end of the string
+    # 'file(1)(2)' -> match = ['2']
+    match = re.findall(r'\((\d+)\)$', filename)
+
+    if match:
+        count = int(match[0])
+        filename = filename[:-3]
+    else:
+        count = 1
+
     new_path = path
     
     while os.path.exists(new_path):
