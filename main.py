@@ -32,6 +32,10 @@ def move_file(filepath, kind):
         # Could not guess file type
         new_path = os.path.join(folders['Other'], filename)
         os.rename(filepath, new_path)
+        
+        if args.verbose:
+            print(f'File {filename} moved to {new_path}')
+        
         return
     
     ftype = kind.mime.split('/')
@@ -60,7 +64,7 @@ def move_file(filepath, kind):
             return
     
     os.rename(filepath, new_path)
-    if parser.verbose:
+    if args.verbose:
         print(f'File {filename} moved to {new_path}')
 
 
