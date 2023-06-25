@@ -77,7 +77,7 @@ def decide_and_move_file(file_path, kind):
     destination = rename_if_exists(destination)
     os.rename(file_path, destination)
 
-    if args.verbose:
+    if VERBOSE:
         print(f'File {filename} moved to {destination}')
 
 
@@ -116,5 +116,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-v', '--verbose', help='Verbose', action='store_true')
     args = parser.parse_args()
+    VERBOSE = args.verbose
 
     main()
