@@ -29,12 +29,14 @@ def get_files(path):
 def move_file(filepath, kind):
     filename = os.path.split(filepath)[-1]
     if kind is None:
+        # Could not guess file type
         new_path = os.path.join(folders['Other'], filename)
         os.rename(filepath, new_path)
         return
     
     ftype = kind.mime.split('/')
     
+    # Matching the top-level media type
     match ftype[0]:
         case 'image':
             new_path = os.path.join(folders['Pictures'], filename)
@@ -46,11 +48,12 @@ def move_file(filepath, kind):
             new_path = os.path.join(folders['Audio'], filename)
         
         case 'application':
-            if ftype[1] in archives:
+            # Checking the subtype
+            if ftype[1] in archives_subtypes:
                 new_path = os.path.join(folders['Archives'], filename)
-            elif ftype[1] in documents:
+            elif ftype[1] in documents_subtypes:
                 new_path = os.path.join(folders['Documents'], filename)
-            elif ftype[1] in fonts:
+            elif ftype[1] in fonts_subtypes:
                 new_path = os.path.join(folders['Fonts'], filename)
         
         case _:
@@ -61,6 +64,7 @@ def move_file(filepath, kind):
         print(f'File {filename} moved to {new_path}')
 
 
+# Folder names and their full paths (populated in main)
 folders = {
     'Documents': None,
     'Pictures': None,
@@ -71,25 +75,29 @@ folders = {
     'Other': None
 }
 
-archives = ['x-brotli', 'x-rpm', 'dicom', 'epub+zip', 'zip', 'x-tar',
-            'x-rar-compressed', 'gzip', 'x-bzip2', 'x-7z-compressed',
-            'x-xz', 'pdf', 'x-msdownload', 'x-shockwave-flash', 'rtf',
-            'octet-stream', 'postscript', 'x-sqlite3', 'x-nintendo-nes-rom',
-            'x-google-chrome-extension', 'vnd.ms-cab-compressed', 'x-deb',
-            'x-unix-archive', 'x-compress', 'x-lzop', 'x-lzip', 'x-lz4', 'zstd']
+# The top-level media type 'application' has many subtypes, and each
+# one should be moved to a different directory. The subtypes possibilities
+# are going to be stored in lists namedc after the directories they belong
 
-documents = ['msword', 'vnd.openxmlformats-officedocument.wordprocessingml.document',
-             'vnd.oasis.opendocument.text', 'vnd.ms-excel',
-             'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-             'vnd.oasis.opendocument.spreadsheet', 'vnd.ms-powerpoint',
-             'vnd.openxmlformats-officedocument.presentationml.presentation',
-             'vnd.oasis.opendocument.presentation']
+archives_subtypes = ['x-brotli', 'x-rpm', 'dicom', 'epub+zip', 'zip', 'x-tar',
+                     'x-rar-compressed', 'gzip', 'x-bzip2', 'x-7z-compressed',
+                     'x-xz', 'pdf', 'x-msdownload', 'x-shockwave-flash', 'rtf',
+                     'octet-stream', 'postscript', 'x-sqlite3', 'x-nintendo-nes-rom',
+                     'x-google-chrome-extension', 'vnd.ms-cab-compressed', 'x-deb',
+                     'x-unix-archive', 'x-compress', 'x-lzop', 'x-lzip', 'x-lz4', 'zstd']
 
-fonts = ['font-woff', 'font-woff', 'font-sfnt', 'font-sfnt']
+documents_subtypes = ['msword', 'vnd.openxmlformats-officedocument.wordprocessingml.document',
+                      'vnd.oasis.opendocument.text', 'vnd.ms-excel',
+                      'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                      'vnd.oasis.opendocument.spreadsheet', 'vnd.ms-powerpoint',
+                      'vnd.openxmlformats-officedocument.presentationml.presentation',
+                      'vnd.oasis.opendocument.presentation']
 
-parser = argparse.ArgumentParser()
-parser.add_argument('-v', '--verbose', help='Verbose', action='store_true')
-args = parser.parse_args()
+fonts_subtypes = ['font-woff', 'font-woff', 'font-sfnt', 'font-sfnt']
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-v', '--verbose', help='Verbose', action='store_true')
+    args = parser.parse_args()
+
     main()
